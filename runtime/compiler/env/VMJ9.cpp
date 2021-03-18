@@ -2516,7 +2516,10 @@ TR_J9VMBase::getClassSignature_DEPRECATED(TR_OpaqueClassBlock * clazz, int32_t &
    for (i = 0; i < numDims; i++)
       sig[i] = '[';
    if (* name != '[')
-      sig[i++] = 'L';
+      if (isValueTypeClass(myClass))
+         sig[i++] = 'Q';
+      else
+         sig[i++] = 'L';
    memcpy(sig+i, name, len);
    i += len;
    if (* name != '[')
@@ -2544,8 +2547,10 @@ TR_J9VMBase::getClassSignature(TR_OpaqueClassBlock * clazz, TR_Memory * trMemory
    for (i = 0; i < numDims; i++)
       sig[i] = '[';
    if (* name != '[')
-      sig[i++] = 'L';
-   memcpy(sig+i, name, len);
+       if (isValueTypeClass(myClass))
+         sig[i++] = 'Q';
+      else
+         sig[i++] = 'L';
    i += len;
    if (* name != '[')
       sig[i++] = ';';
@@ -4725,6 +4730,7 @@ TR_J9VMBase::lookupMethodHandleThunkArchetype(uintptr_t methodHandle)
       {
       case '[':
       case 'L':
+      case 'Q':
          // The thunkable signature might return some other class, but archetypes
          // returning a reference are always declared to return Object.
          //
@@ -7055,7 +7061,7 @@ TR_J9VM::getClassFromSignature(const char * sig, int32_t sigLength, J9ConstantPo
    J9Class * j9class = NULL;
    TR_OpaqueClassBlock * returnValue = NULL;
 
-   // For a non-array class type, strip off the first 'L' and last ';' of the
+   // For a non-array class type, strip off the first 'L' or 'Q' and last ';' of the
    // signature
    //
    if ((*sig == 'L' || *sig == 'Q') && sigLength > 2)
