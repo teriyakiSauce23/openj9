@@ -1476,6 +1476,7 @@ static void printMethodHandleArgs(j9object_t methodHandle, void **stack, J9VMThr
                   TR_VerboseLog::writeLine(vlogTag, "%p     arg " INT64_PRINTF_FORMAT_HEX " %.*s", vmThread, *(int64_t*)(stack+1), nextArg-curArg, curArg);
                   break;
                case 'L':
+	       case 'Q':
                case '[':
                   TR_VerboseLog::writeLine(vlogTag, "%p     arg " POINTER_PRINTF_FORMAT " %.*s", vmThread, (void*)(*(intptr_t*)stack), nextArg-curArg, curArg);
                   stack -= 1;
