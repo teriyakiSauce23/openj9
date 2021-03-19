@@ -2549,8 +2549,9 @@ TR_J9VMBase::getClassSignature(TR_OpaqueClassBlock * clazz, TR_Memory * trMemory
    if (* name != '[')
        if (isValueTypeClass(myClass))
          sig[i++] = 'Q';
-      else
+       else
          sig[i++] = 'L';
+   memcpy(sig+i, name, len);
    i += len;
    if (* name != '[')
       sig[i++] = ';';
